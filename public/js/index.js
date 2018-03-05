@@ -1,4 +1,4 @@
-/*global jQuery navigator alert io*/
+/*global jQuery navigator alert io moment*/
 var socket = io();
 socket.on('connect', () => {
     console.log('Connected to server');
@@ -12,9 +12,10 @@ socket.on('disconnect', () => {
 
 
 socket.on('newMessage', (message) => {
+    var formattedTime = moment(message.createdAt).format('hh:mm:ss')
     console.log('newMessage', message);
     var li = jQuery('<li></li>');
-    li.text(`${message.from}: ${message.text}`);
+    li.text(`${message.from} ${formattedTime}: ${message.text}`);
     jQuery('#messages').append(li);
 });
 
@@ -30,9 +31,11 @@ jQuery('#message-form').submit(function (e) {
     });
 });
 socket.on('newLocationMessage', (message) => {
+    var formattedTime = moment(message.createdAt).format('hh:mm:ss')
+
     var li = jQuery('<li></li>');
     var a = jQuery('<a target="_blank">My current location</a>');
-    li.text(`${message.from}: `);
+    li.text(`${message.from} ${formattedTime}: `);
     a.attr('href', message.url);
     li.append(a);
     jQuery('#messages').append(li);
