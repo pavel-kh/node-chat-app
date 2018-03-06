@@ -1,4 +1,4 @@
-/*global jQuery navigator alert io moment*/
+/*global jQuery navigator alert io moment window Mustache*/
 var socket = io();
 
 function scrollToBottom() {
@@ -12,7 +12,7 @@ function scrollToBottom() {
     var lastMessageHeight = newMessage.prev().innerHeight();
 
 
-    if(clientHeight + scrollTop + newMessageHeight + lastMessageHeight >= scrollHeight){
+    if (clientHeight + scrollTop + newMessageHeight + lastMessageHeight >= scrollHeight) {
         messages.scrollTop(scrollHeight);
     }
 
@@ -20,7 +20,15 @@ function scrollToBottom() {
 
 socket.on('connect', () => {
     console.log('Connected to server');
-
+    var params = jQuery.deparam(window.location.search);
+    socket.emit('join', params, (err) => {
+        if(err){
+            alert(err);
+            window.location.href = '/';
+        }else{
+            console.log('No error');
+        }
+    });
 
 });
 
